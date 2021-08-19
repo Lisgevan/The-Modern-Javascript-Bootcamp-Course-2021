@@ -16,12 +16,12 @@ class Timer {
 	//declare start with arrow function so that "this" will refer to he class and not the window
 	start = () => {
 		if (this.onStart) {
-			this.onStart();
+			this.onStart(this.timeRemaining);
 		}
 		//call tick manual to start immediately
 		this.tick();
 		//then run tick() every second
-		this.interval = setInterval(this.tick, 1000);
+		this.interval = setInterval(this.tick, 50);
 	};
 
 	pause = () => {
@@ -35,9 +35,9 @@ class Timer {
 				this.onComplete();
 			}
 		} else {
-			this.timeRemaining = this.timeRemaining - 1;
+			this.timeRemaining = this.timeRemaining - 0.05;
 			if (this.onTick) {
-				this.onTick();
+				this.onTick(this.timeRemaining);
 			}
 		}
 	};
@@ -47,6 +47,6 @@ class Timer {
 	}
 	//"setter method" set a value to the variable with the name of the function, we call it as 'this.functionName'
 	set timeRemaining(time) {
-		this.durationInput.value = time;
+		this.durationInput.value = time.toFixed(2); //round to 2 decimal places
 	}
 }
