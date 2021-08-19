@@ -20,8 +20,20 @@ class Timer {
 	};
 
 	tick = () => {
-		console.log("ticked");
+		if (this.timeRemaining <= 0) {
+			this.pause();
+		} else {
+			this.timeRemaining = this.timeRemaining - 1;
+		}
 	};
+	//"getter method" get a value and make a variable with the name of the function, we call it as 'this.functionName'
+	get timeRemaining() {
+		return parseFloat(durationInput.value);
+	}
+	//"setter method" set a value to the variable with the name of the function, we call it as 'this.functionName'
+	set timeRemaining(time) {
+		this.durationInput.value = time;
+	}
 }
 
 const durationInput = document.querySelector("#duration");
