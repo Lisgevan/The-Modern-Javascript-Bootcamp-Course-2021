@@ -16,15 +16,32 @@ const fetchData = async searchTerm => {
 
 const input = document.querySelector("input");
 
-//fetch data when user stops typing for 1000 milisecs
-let timeoutId;
-const onInput = event => {
-	if (timeoutId) {
-		clearTimeout(timeoutId);
-	}
-	timeoutId = setTimeout(() => {
-		fetchData(event.target.value);
-	}, 1000);
+// //fetch data when user stops typing for 1000 milisecs
+// let timeoutId;
+// const onInput = event => {
+// 	if (timeoutId) {
+// 		clearTimeout(timeoutId);
+// 	}
+// 	timeoutId = setTimeout(() => {
+// 		fetchData(event.target.value);
+// 	}, 1000);
+// };
+
+//refactored function to be reusable and better to understand
+const debounce = (func, delay) => {
+	let timeoutId;
+	return (...args) => {
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+		}
+		timeoutId = setTimeout(() => {
+			func.apply(null, args);
+		}, delay);
+	};
 };
 
-input.addEventListener("input", onInput);
+const onInput = event => {
+	fetchData(event.target.value);
+};
+
+input.addEventListener("input", debounce(onInput, 500));
