@@ -3,15 +3,28 @@
 // OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=b9230ca0
 
 //helper function to fetch results
-const fetchData = async () => {
+const fetchData = async searchTerm => {
 	const responce = await axios.get("http://www.omdbapi.com/", {
 		params: {
 			apikey: "b9230ca0",
-			i: "tt0848228",
+			s: searchTerm,
 		},
 	});
 
 	console.log(responce.data);
 };
 
-fetchData();
+const input = document.querySelector("input");
+
+//fetch data when user stops typing for 1000 milisecs
+let timeoutId;
+const onInput = event => {
+	if (timeoutId) {
+		clearTimeout(timeoutId);
+	}
+	timeoutId = setTimeout(() => {
+		fetchData(event.target.value);
+	}, 1000);
+};
+
+input.addEventListener("input", onInput);

@@ -7,5 +7,5 @@ A repository with the projects from Part 02 of "The Modern Javascript Bootcamp C
    Find it under the "timer" folder.
 
 2. Project two: **"Movie Fights"**.  
-   A small JavaScript project of a page where you search for two movies and then the displayed info are compared and marked according to which is the best.  
+   A small JavaScript project of a page where you search for two movies and then the displayed info are compared and styled according to which is the best.  
    Find it under the "moviefights" folder.
