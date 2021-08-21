@@ -2,106 +2,38 @@
 // Please append it to all of your API requests,
 // OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=b9230ca0
 
-//helper function to fetch results
-const fetchData = async searchTerm => {
-	const responce = await axios.get("http://www.omdbapi.com/", {
-		params: {
-			apikey: "b9230ca0",
-			s: searchTerm,
-		},
-	});
-
-	if (responce.data.Error) {
-		return [];
-	}
-
-	return responce.data.Search;
-}; //end
-
-const root = document.querySelector(".autocomplete");
-root.innerHTML = `
-    <label><b>Search for a movie</b></label>
-    <input class='input' />
-	<div class="dropdown">
-        <div class="dropdown-menu">
-          <div class="dropdown-content results">
-            
-          </div>
-        </div>
-      </div>
-`;
-
-const input = document.querySelector("input");
-const dropdown = document.querySelector(".dropdown");
-const resultsWrapper = document.querySelector(".results");
-
-// For reference only code//fetch data when user stops typing for 1000 milisecs
-// let timeoutId;
-// const onInput = event => {
-// 	if (timeoutId) {
-// 		clearTimeout(timeoutId);
-// 	}
-// 	timeoutId = setTimeout(() => {
-// 		fetchData(event.target.value);
-// 	}, 1000);
-// };
-
-//refactored function to be reusable and better to understand
-// //moved to utils.js
-// const debounce = (func, delay=1000) => {
-// 	let timeoutId;
-// 	return (...args) => {
-// 		if (timeoutId) {
-// 			clearTimeout(timeoutId);
-// 		}
-// 		timeoutId = setTimeout(() => {
-// 			func.apply(null, args);
-// 		}, delay);
-// 	};
-// };
-
-const onInput = async event => {
-	const movies = await fetchData(event.target.value);
-
-	console.log(movies);
-	//hide dropdown if there are no resuls
-	if (!movies.length) {
-		dropdown.classList.remove("is-active");
-		return;
-	} //end
-
-	//create dropdown options
-	resultsWrapper.innerHTML = "";
-	dropdown.classList.add("is-active");
-	for (let movie of movies) {
-		const option = document.createElement("a");
+//funtion called to autcomplete/render page. all parameters are passed here.
+createAutoComplete({
+	root: document.querySelector(".autocomplete"),
+	renderOption(movie) {
 		const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
 		const yearSrc = movie.Year === "N/A" ? "" : movie.Year;
-
-		input.value = ""; //delete input and wait for user selection
-		option.classList.add("dropdown-item");
-		option.innerHTML = `
-            <img src="${imgSrc}"/>
-            ${movie.Title} (${yearSrc})
-        `;
-		option.addEventListener("click", event => {
-			dropdown.classList.remove("is-active");
-			input.value = movie.Title;
-			onMovieSelect(movie);
+		return `
+                <img src="${imgSrc}"/>
+                ${movie.Title} (${yearSrc})
+            `;
+	},
+	onOptionSelect(movie) {
+		onMovieSelect(movie);
+	},
+	inputValue(movie) {
+		return movie.Title;
+	},
+	async fetchData(searchTerm) {
+		const responce = await axios.get("http://www.omdbapi.com/", {
+			params: {
+				apikey: "b9230ca0",
+				s: searchTerm,
+			},
 		});
 
-		resultsWrapper.appendChild(option);
-	} //end
-};
+		if (responce.data.Error) {
+			return [];
+		}
 
-input.addEventListener("input", debounce(onInput, 500));
-
-//close dropdown if you click out of the results
-document.addEventListener("click", event => {
-	if (!root.contains(event.target)) {
-		dropdown.classList.remove("is-active");
-	}
-}); //end
+		return responce.data.Search;
+	},
+});
 
 const onMovieSelect = async movie => {
 	const responce = await axios.get("http://www.omdbapi.com/", {
