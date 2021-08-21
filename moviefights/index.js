@@ -16,7 +16,7 @@ const fetchData = async searchTerm => {
 	}
 
 	return responce.data.Search;
-};
+}; //end
 
 const root = document.querySelector(".autocomplete");
 root.innerHTML = `
@@ -35,7 +35,7 @@ const input = document.querySelector("input");
 const dropdown = document.querySelector(".dropdown");
 const resultsWrapper = document.querySelector(".results");
 
-// //fetch data when user stops typing for 1000 milisecs
+// For reference only code//fetch data when user stops typing for 1000 milisecs
 // let timeoutId;
 // const onInput = event => {
 // 	if (timeoutId) {
@@ -68,8 +68,9 @@ const onInput = async event => {
 	if (!movies.length) {
 		dropdown.classList.remove("is-active");
 		return;
-	}
+	} //end
 
+	//create dropdown options
 	resultsWrapper.innerHTML = "";
 	dropdown.classList.add("is-active");
 	for (let movie of movies) {
@@ -77,6 +78,7 @@ const onInput = async event => {
 		const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
 		const yearSrc = movie.Year === "N/A" ? "" : movie.Year;
 
+		input.value = ""; //delete input and wait for user selection
 		option.classList.add("dropdown-item");
 		option.innerHTML = `
             <img src="${imgSrc}"/>
@@ -85,10 +87,11 @@ const onInput = async event => {
 		option.addEventListener("click", event => {
 			dropdown.classList.remove("is-active");
 			input.value = movie.Title;
+			onMovieSelect(movie);
 		});
 
 		resultsWrapper.appendChild(option);
-	}
+	} //end
 };
 
 input.addEventListener("input", debounce(onInput, 500));
@@ -98,4 +101,54 @@ document.addEventListener("click", event => {
 	if (!root.contains(event.target)) {
 		dropdown.classList.remove("is-active");
 	}
-});
+}); //end
+
+const onMovieSelect = async movie => {
+	const responce = await axios.get("http://www.omdbapi.com/", {
+		params: {
+			apikey: "b9230ca0",
+			i: movie.imdbID,
+		},
+	});
+	console.log(responce.data);
+	document.querySelector("#summary").innerHTML = movieTemplate(responce.data);
+};
+
+const movieTemplate = movieDetail => {
+	return `
+		<article class="media">
+  			<figure class="media-left">
+    			<p class="image">
+      				<img src="${movieDetail.Poster}" alt="${movieDetail.Title}">
+   				 </p>
+			</figure>
+			<div class="media-content">
+			<div class="content">
+				<h1>${movieDetail.Title}</h1>
+				<h4>${movieDetail.Genre}</h4>
+				<p>${movieDetail.Plot}</p>
+			</div>
+			</div>
+		</article>
+		<article class="notification is-primary">
+			<p class="title">${movieDetail.Awards}</p>
+			<p class="subtitle">Awards</p>
+		</article>
+		<article class="notification is-primary">
+			<p class="title">${movieDetail.BoxOffice}</p>
+			<p class="subtitle">Box Office</p>
+		</article>
+		<article class="notification is-primary">
+			<p class="title">${movieDetail.Metascore}</p>
+			<p class="subtitle">Metascore</p>
+		</article>
+		<article class="notification is-primary">
+			<p class="title">${movieDetail.imdbRaing}</p>
+			<p class="subtitle">IMDB Rating</p>
+		</article>
+		<article class="notification is-primary">
+			<p class="title">${movieDetail.imdbVotes}</p>
+			<p class="subtitle">IMDB Votes</p>
+		</article>
+	`;
+};
