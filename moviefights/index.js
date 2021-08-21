@@ -33,7 +33,7 @@ root.innerHTML = `
 
 const input = document.querySelector("input");
 const dropdown = document.querySelector(".dropdown");
-const results = document.querySelector(".results");
+const resultsWrapper = document.querySelector(".results");
 
 // //fetch data when user stops typing for 1000 milisecs
 // let timeoutId;
@@ -62,16 +62,40 @@ const results = document.querySelector(".results");
 
 const onInput = async event => {
 	const movies = await fetchData(event.target.value);
+
 	console.log(movies);
+	//hide dropdown if there are no resuls
+	if (!movies.length) {
+		dropdown.classList.remove("is-active");
+		return;
+	}
+
+	resultsWrapper.innerHTML = "";
+	dropdown.classList.add("is-active");
 	for (let movie of movies) {
-		console.log(movie.Poster);
-		const div = document.createElement("div");
-		div.innerHTML = `
-            <img src="${movie.Poster}"/>
-            <h1> ${movie.Title}</h1>
+		const option = document.createElement("a");
+		const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
+		const yearSrc = movie.Year === "N/A" ? "" : movie.Year;
+
+		option.classList.add("dropdown-item");
+		option.innerHTML = `
+            <img src="${imgSrc}"/>
+            ${movie.Title} (${yearSrc})
         `;
-		document.querySelector("#target").appendChild(div);
+		option.addEventListener("click", event => {
+			dropdown.classList.remove("is-active");
+			input.value = movie.Title;
+		});
+
+		resultsWrapper.appendChild(option);
 	}
 };
 
 input.addEventListener("input", debounce(onInput, 500));
+
+//close dropdown if you click out of the results
+document.addEventListener("click", event => {
+	if (!root.contains(event.target)) {
+		dropdown.classList.remove("is-active");
+	}
+});
