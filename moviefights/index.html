@@ -28,7 +28,28 @@
     </section>
     <!-- Data show section -->
     <div class="container">
-      <input type="text" />
+      <div class="autocomplete"></div>
+      <div class="dropdown is-active">
+        <input type="text" />
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a href="#" class="dropdown-item">
+              Dropdown item
+            </a>
+            <a class="dropdown-item">
+              Other dropdown item
+            </a>
+            <a href="#" class="dropdown-item">
+              Active dropdown item
+            </a>
+            <a href="#" class="dropdown-item">
+              Other dropdown item
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="target"></div>
     </div>
     <script src="utils.js"></script>
     <script src="index.js"></script>
