@@ -3,8 +3,7 @@
 // OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=b9230ca0
 
 //funtion called to autcomplete/render page. all parameters are passed here.
-createAutoComplete({
-	root: document.querySelector(".autocomplete"),
+const autoCompleConfig = {
 	renderOption(movie) {
 		const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
 		const yearSrc = movie.Year === "N/A" ? "" : movie.Year;
@@ -12,9 +11,6 @@ createAutoComplete({
                 <img src="${imgSrc}"/>
                 ${movie.Title} (${yearSrc})
             `;
-	},
-	onOptionSelect(movie) {
-		onMovieSelect(movie);
 	},
 	inputValue(movie) {
 		return movie.Title;
@@ -33,9 +29,26 @@ createAutoComplete({
 
 		return responce.data.Search;
 	},
+};
+
+createAutoComplete({
+	...autoCompleConfig,
+	root: document.querySelector("#left-autocomplete"),
+	onOptionSelect(movie) {
+		document.querySelector(".tutorial").classList.add("is-hidden");
+		onMovieSelect(movie, document.querySelector(".left-summary"));
+	},
+});
+createAutoComplete({
+	...autoCompleConfig,
+	root: document.querySelector("#right-autocomplete"),
+	onOptionSelect(movie) {
+		document.querySelector(".tutorial").classList.add("is-hidden");
+		onMovieSelect(movie, document.querySelector(".right-summary"));
+	},
 });
 
-const onMovieSelect = async movie => {
+const onMovieSelect = async (movie, summaryElement) => {
 	const responce = await axios.get("http://www.omdbapi.com/", {
 		params: {
 			apikey: "b9230ca0",
@@ -43,7 +56,7 @@ const onMovieSelect = async movie => {
 		},
 	});
 	console.log(responce.data);
-	document.querySelector("#summary").innerHTML = movieTemplate(responce.data);
+	summaryElement.innerHTML = movieTemplate(responce.data);
 };
 
 const movieTemplate = movieDetail => {
@@ -75,7 +88,7 @@ const movieTemplate = movieDetail => {
 			<p class="subtitle">Metascore</p>
 		</article>
 		<article class="notification is-primary">
-			<p class="title">${movieDetail.imdbRaing}</p>
+			<p class="title">${movieDetail.imdbRating}</p>
 			<p class="subtitle">IMDB Rating</p>
 		</article>
 		<article class="notification is-primary">
