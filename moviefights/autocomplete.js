@@ -57,7 +57,7 @@ const createAutoComplete = ({ root, renderOption, onOptionSelect, inputValue, fe
 		for (let item of items) {
 			const option = document.createElement("a");
 
-			input.value = ""; //delete input and wait for user selection
+			// input.value = ""; //delete input and wait for user selection
 			option.classList.add("dropdown-item");
 			option.innerHTML = renderOption(item);
 			option.addEventListener("click", event => {
