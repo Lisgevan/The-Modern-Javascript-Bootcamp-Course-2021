@@ -36,7 +36,7 @@ createAutoComplete({
 	root: document.querySelector("#left-autocomplete"),
 	onOptionSelect(movie) {
 		document.querySelector(".tutorial").classList.add("is-hidden");
-		onMovieSelect(movie, document.querySelector(".left-summary"), "left");
+		onMovieSelect(movie, document.querySelector("#left-summary"), "left");
 	},
 });
 createAutoComplete({
@@ -44,7 +44,7 @@ createAutoComplete({
 	root: document.querySelector("#right-autocomplete"),
 	onOptionSelect(movie) {
 		document.querySelector(".tutorial").classList.add("is-hidden");
-		onMovieSelect(movie, document.querySelector(".right-summary"), "right");
+		onMovieSelect(movie, document.querySelector("#right-summary"), "right");
 	},
 });
 
@@ -70,7 +70,23 @@ const onMovieSelect = async (movie, summaryElement, side) => {
 };
 
 const runComparison = () => {
-	console.log("Time for comparison");
+	const leftSideStats = document.querySelectorAll("#left-summary .notification");
+	const rightSideStats = document.querySelectorAll("#right-summary .notification");
+	console.log(leftSideStats, rightSideStats);
+
+	leftSideStats.forEach((leftStat, index) => {
+		const rightStat = rightSideStats[index];
+		const leftSideValue = parseInt(leftStat.dataset.value);
+		const rightSideValue = parseInt(rightStat.dataset.value);
+
+		if (rightSideValue > leftSideValue) {
+			leftStat.classList.remove("is-primary");
+			leftStat.classList.add("is-warning");
+		} else {
+			rightStat.classList.remove("is-primary");
+			rightStat.classList.add("is-warning");
+		}
+	});
 };
 
 const movieTemplate = movieDetail => {
@@ -78,16 +94,14 @@ const movieTemplate = movieDetail => {
 	// then add them as data properties at the elements the show them so we can compare them
 	const dollars = parseInt(movieDetail.BoxOffice.replace(/\$/g, "").replace(/,/g, ""));
 	const metascore = parseInt(movieDetail.Metascore);
-	const imdbRating = parseFoal(movieDetail.imdbRating);
+	const imdbRating = parseFloat(movieDetail.imdbRating);
 	const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ""));
-
-	let counts;
 	const awards = movieDetail.Awards.split(" ").reduce((prev, word) => {
 		const value = parseInt(word);
 		if (isNaN(word)) {
 			return prev;
 		} else {
-			return prev + word;
+			return prev + value;
 		}
 	});
 
