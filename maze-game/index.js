@@ -1,11 +1,13 @@
 //get access to objects from Matter library by destructuring them
 const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-const cells = 10;
-const width = 600;
-const height = 600;
+const cellsHorizontal = 4;
+const cellsVertical = 10;
+const width = window.innerWidth;
+const height = window.innerHeight;
 
-const unitLength = width / cells;
+const unitLengthX = window.innerWidth / cellsHorizontal;
+const unitLengthY = window.innerHeight / cellsVertical;
 
 const engine = Engine.create();
 engine.world.gravity.y = 0;
@@ -52,21 +54,21 @@ const shuffle = arr => {
 };
 
 //grid array
-const grid = Array(cells)
+const grid = Array(cellsVertical)
 	.fill(null)
-	.map(() => Array(cells).fill(false));
+	.map(() => Array(cellsHorizontal).fill(false));
 //vertical walls
-const verticals = Array(cells)
+const verticals = Array(cellsVertical)
 	.fill(null)
-	.map(() => Array(cells - 1).fill(false));
+	.map(() => Array(cellsHorizontal - 1).fill(false));
 //horizontal walls
-const horizontals = Array(cells - 1)
+const horizontals = Array(cellsVertical - 1)
 	.fill(null)
-	.map(() => Array(cells).fill(false));
+	.map(() => Array(cellsHorizontal).fill(false));
 
 //pick  random cell
-const startRow = Math.floor(Math.random() * cells);
-const startColumn = Math.floor(Math.random() * cells);
+const startRow = Math.floor(Math.random() * cellsVertical);
+const startColumn = Math.floor(Math.random() * cellsHorizontal);
 
 const stepThroughCell = (row, column) => {
 	//If I have visited the cell at [row, column], then return
@@ -90,7 +92,7 @@ const stepThroughCell = (row, column) => {
 		const [nextRow, nextColumn, direction] = neighbor;
 
 		//...see if that neighbor is out of bounds
-		if (nextRow < 0 || nextRow >= cells || nextColumn < 0 || nextColumn >= cells) {
+		if (nextRow < 0 || nextRow >= cellsVertical || nextColumn < 0 || nextColumn >= cellsHorizontal) {
 			continue;
 		}
 
@@ -127,9 +129,9 @@ horizontals.forEach((row, rowIndex) => {
 		}
 
 		const wall = Bodies.rectangle(
-			columnIndex * unitLength + unitLength / 2, //calculate x axis distance to the center of wall
-			rowIndex * unitLength + unitLength, //calculate y axis distance
-			unitLength, //width of wall
+			columnIndex * unitLengthX + unitLengthX / 2, //calculate x axis distance to the center of wall
+			rowIndex * unitLengthY + unitLengthY, //calculate y axis distance
+			unitLengthX, //width of wall
 			10, //height of wall
 			{
 				label: "wall",
@@ -147,10 +149,10 @@ verticals.forEach((row, rowIndex) => {
 		}
 
 		const wall = Bodies.rectangle(
-			columnIndex * unitLength + unitLength, //calculate x axis distance
-			rowIndex * unitLength + unitLength / 2, //calculate y axis distance to the center of wall
+			columnIndex * unitLengthX + unitLengthX, //calculate x axis distance
+			rowIndex * unitLengthY + unitLengthY / 2, //calculate y axis distance to the center of wall
 			10, //width of wall
-			unitLength, //height of wall
+			unitLengthY, //height of wall
 			{
 				label: "wall",
 				isStatic: true,
@@ -163,10 +165,10 @@ verticals.forEach((row, rowIndex) => {
 //Placing starting and ending points
 //ending point
 const goal = Bodies.rectangle(
-	width - unitLength / 2,
-	height - unitLength / 2,
-	(unitLength * 60) / 100,
-	(unitLength * 60) / 100,
+	width - unitLengthX / 2,
+	height - unitLengthY / 2,
+	(unitLengthX * 60) / 100,
+	(unitLengthY * 60) / 100,
 	{
 		isStatic: true,
 		render: { fillStyle: "green" },
@@ -176,7 +178,8 @@ const goal = Bodies.rectangle(
 World.add(world, goal);
 
 //starting point
-const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength * 0.2, {
+const ballRadious = Math.min(unitLengthX, unitLengthY) / 4;
+const ball = Bodies.circle(unitLengthX / 2, unitLengthY / 2, ballRadious, {
 	render: { fillStyle: "red" },
 	label: "ball",
 });
@@ -203,6 +206,7 @@ Events.on(engine, "collisionStart", event => {
 	event.pairs.forEach(collision => {
 		const labels = ["ball", "goal"];
 		if (labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label)) {
+			document.querySelector(".winner").classList.remove("hidden");
 			world.gravity.y = 1;
 			world.bodies.forEach(body => {
 				if (body.label === "wall") {
