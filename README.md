@@ -13,3 +13,7 @@ A repository with the projects from Part 02 of "The Modern Javascript Bootcamp C
 3. Project three: **"Maze Game"**.  
    A small JavaScript project of a maze game where you have to move the ball to the square.  
    Find it under the "maze-game" folder.
+
+4. Project three: **"Secter Message"**.  
+   A small JavaScript project of a page where you enter a message in a form and it creates a link with the 'secret message.  
+   Find it under the "secret-message" folder.
