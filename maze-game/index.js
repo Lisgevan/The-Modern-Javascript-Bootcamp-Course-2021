@@ -5,6 +5,8 @@ const cells = 3;
 const width = 600;
 const height = 600;
 
+const unitLength = width / cells;
+
 const engine = Engine.create();
 const { world } = engine;
 const render = Render.create({
@@ -114,3 +116,39 @@ const stepThroughCell = (row, column) => {
 };
 
 stepThroughCell(startRow, startColumn);
+
+//Drawing of the maze in the MatterJS world
+//horizontal walls
+horizontals.forEach((row, rowIndex) => {
+	row.forEach((open, columnIndex) => {
+		if (open) {
+			return;
+		}
+
+		const wall = Bodies.rectangle(
+			columnIndex * unitLength + unitLength / 2, //calculate x axis distance to the center of wall
+			rowIndex * unitLength + unitLength, //calculate y axis distance
+			unitLength, //width of wall
+			10, //height of wall
+			{ isStatic: true }
+		);
+		World.add(world, wall);
+	});
+});
+//vertical walls(repeating the above process)
+verticals.forEach((row, rowIndex) => {
+	row.forEach((open, columnIndex) => {
+		if (open) {
+			return;
+		}
+
+		const wall = Bodies.rectangle(
+			columnIndex * unitLength + unitLength, //calculate x axis distance
+			rowIndex * unitLength + unitLength / 2, //calculate y axis distance to the center of wall
+			10, //width of wall
+			unitLength,
+			{ isStatic: true } //height of wall
+		);
+		World.add(world, wall);
+	});
+});
