@@ -18,7 +18,7 @@ A repository with the projects from Part 02 of "The Modern Javascript Bootcamp C
    A small JavaScript project of a page where you enter a message in a form and it creates a link with the 'secret message.  
    Find it under the "04-Secret-Message" folder.
 
-5. Project five: **"ls like command"**.  
+5. Project five: **"'ls' like command"**.  
    A small JavaScript project using NodeJS trying to make a terminal command like "ls".  
    Find it under the "05-NodeJS/list-command" folder.  
    Folder 05-NodeJS/_INTRO_ was made just for pracricing intro to node JS.
