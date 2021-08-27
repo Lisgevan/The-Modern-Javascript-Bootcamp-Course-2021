@@ -1,4 +1,5 @@
 const express = require("express");
+const usersRepo = require("./repositories/users");
 //const bodyParser = require("body-parser"); (====>depreciated way)
 
 const app = express();
@@ -44,8 +45,18 @@ app.get("/", (req, res) => {
 
 // app.post("/", bodyParser.urlencoded({ extended:true}), (req, res) => {    (===========> deprecited)
 //(new way of doing the same thing)
-app.post("/", (req, res) => {
-	console.log(req.body);
+app.post("/", async (req, res) => {
+	const { email, password, passwordConfirmation } = req.body;
+	//check if user email excists
+	const existingUser = await usersRepo.getOneBy({ email });
+	if (existingUser) {
+		return res.send("Email in use");
+	}
+	//check if passwords match
+	if (password !== passwordConfirmation) {
+		return res.send("Passwords must match");
+	}
+
 	res.send("Account created!!!");
 });
 
