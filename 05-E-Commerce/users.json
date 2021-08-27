@@ -1,15 +1,17 @@
 [
-  {
-    "email": "test@test.com"
-  },
-  {
-    "email": "martina@korhelik.cz",
-    "password": "qwerty",
-    "id": "0eff39c3"
-  },
-  {
-    "email": "user8@django201.dev",
-    "password": "password",
-    "id": "17d9fc80"
-  }
+	{
+		"email": "user1@django201.dev",
+		"password": "6b6ce5d8afccff799879dcd32ddd363cd9752fca75fa71477dbb2790db4d20c688c8b8a1704f0ef58bac73bb209bf57e48e242cd8a8d27d4726b83bf6ea22a62.37feaeae3dcacfe7",
+		"id": "4c0611bf"
+	},
+	{
+		"email": "alaloun@gmail.com",
+		"password": "2092f3bd6688df68e8790ea4d8dcd13343a1fa3ea015ae0991581f7b3c46514591597f05d3bf895016f90ec11f57ad0f0c4151c71851bd159df9acaffbf78675.86e4885a3de9d167",
+		"id": "f690cea1"
+	},
+	{
+		"email": "user8@django201.dev",
+		"password": "076ed4bac2e1c139eb82f45e59a493731020bf39f2be3923bba10d2a8d0fea749c358ac4693487e527f70f9e5939ef1c578c6cd6d5d117dc9b22978578e354f0.a62c7dc9e16b4281",
+		"id": "724d4f98"
+	}
 ]
