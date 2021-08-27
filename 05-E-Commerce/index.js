@@ -1,22 +1,29 @@
 const express = require("express");
 const usersRepo = require("./repositories/users");
-//const bodyParser = require("body-parser"); (====>depreciated way)
+const cookieSession = require("cookie-session");
 
+//const bodyParser = require("body-parser"); (====>depreciated way)
 const app = express();
 // the .use(middlewareFunction) is used when we want all our wrap handlers (like app) to have that middleware we applied
 app.use(express.urlencoded({ extended: true }));
+app.use(
+	cookieSession({
+		keys: ["shlai4ytqi4tl43hvnl987"],
+	})
+);
 
 //route handler
-app.get("/", (req, res) => {
+app.get("/signup", (req, res) => {
 	res.send(`
-    <div>
-        <form method="POST">
-            <input name="email" placeholder="email"/>
-            <input name="password" placeholder="password"/>
-            <input name="passwordConfirmation" placeholder="password confirmation"/>
-            <button> Sign Up </button>
-        </form>
-    <div>
+        <div>
+            Your Id is: ${req.session.userId}
+            <form method="POST">
+                <input name="email" placeholder="email"/>
+                <input name="password" placeholder="password"/>
+                <input name="passwordConfirmation" placeholder="password confirmation"/>
+                <button> Sign Up </button>
+            </form>
+        <div>
     `);
 });
 
@@ -45,7 +52,7 @@ app.get("/", (req, res) => {
 
 // app.post("/", bodyParser.urlencoded({ extended:true}), (req, res) => {    (===========> deprecited)
 //(new way of doing the same thing)
-app.post("/", async (req, res) => {
+app.post("/signup", async (req, res) => {
 	const { email, password, passwordConfirmation } = req.body;
 	//check if user email excists
 	const existingUser = await usersRepo.getOneBy({ email });
@@ -56,8 +63,46 @@ app.post("/", async (req, res) => {
 	if (password !== passwordConfirmation) {
 		return res.send("Passwords must match");
 	}
+	//Create a user in user repo to reprisent this person
+	const user = await usersRepo.create({ email, password });
+
+	//Store the id of that user inside the users cookie (using 3rd party library "npm install cookie-session")
+	req.session.userId = user.id;
 
 	res.send("Account created!!!");
+});
+
+app.get("/signout", (req, res) => {
+	req.session = null;
+	res.send("You are logged out");
+});
+
+app.get("/signin", (req, res) => {
+	res.send(`
+        <div>
+            <form method="POST">
+                <input name="email" placeholder="email"/>
+                <input name="password" placeholder="password"/>
+                <button> Sign In </button>
+            </form>
+        <div>
+    `);
+});
+
+app.post("/signin", async (req, res) => {
+	const { email, password } = req.body;
+	//check if user is registered
+	const user = await usersRepo.getOneBy({ email });
+
+	if (!user) {
+		return res.send("Email not found");
+	}
+	if (user.password !== password) {
+		return res.send("Invalid password");
+	}
+
+	req.session.userId = user.id;
+	return res.send("YOU are signed in!");
 });
 
 app.listen(3000, () => {

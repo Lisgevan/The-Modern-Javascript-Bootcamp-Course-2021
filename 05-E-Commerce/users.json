@@ -1,5 +1,15 @@
 [
-	{
-		"email": "test@test.com"
-	}
+  {
+    "email": "test@test.com"
+  },
+  {
+    "email": "martina@korhelik.cz",
+    "password": "qwerty",
+    "id": "0eff39c3"
+  },
+  {
+    "email": "user8@django201.dev",
+    "password": "password",
+    "id": "17d9fc80"
+  }
 ]
