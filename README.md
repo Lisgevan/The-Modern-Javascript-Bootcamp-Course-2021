@@ -19,5 +19,5 @@ A repository with the projects from Part 02 of "The Modern Javascript Bootcamp C
    Find it under the "04-Secret-Message" folder.
 
 5. Project five: **"E-Commerce site"**.  
-   A JavaScript project to replicate an E-Commerce site.  
+   A JavaScript project to replicate an E-Commerce site using NodeJS and Express server.  
    Find it under the "05-E-Commerce" folder.
