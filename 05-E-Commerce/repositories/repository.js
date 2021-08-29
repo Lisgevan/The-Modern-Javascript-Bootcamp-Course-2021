@@ -16,10 +16,10 @@ module.exports = class Repository {
 	}
 
 	async create(attrs) {
-		attrs.id = this.randomId9();
+		attrs.id = this.randomId();
 
 		const records = await this.getAll();
-		records.push(record);
+		records.push(attrs);
 
 		await this.writeAll(records);
 		return attrs;
@@ -28,6 +28,10 @@ module.exports = class Repository {
 	async getAll() {
 		//open file called this.filename parse the contents and return the parsed data
 		return JSON.parse(await fs.promises.readFile(this.filename, { encoding: "utf8" }));
+	}
+
+	async writeAll(records) {
+		await fs.promises.writeFile(this.filename, JSON.stringify(records, null, 2));
 	}
 
 	randomId() {
