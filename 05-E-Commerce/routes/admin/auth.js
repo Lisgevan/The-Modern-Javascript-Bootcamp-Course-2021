@@ -1,8 +1,16 @@
 const express = require("express");
+const { check, validationResult } = require("express-validator");
 
 const usersRepo = require("../../repositories/users");
 const signupTemplate = require("../../views/admin/auth/signup");
 const signinTemplate = require("../../views/admin/auth/signin");
+const {
+	requireEmail,
+	requirePassword,
+	requirePasswordConfirmation,
+	reuireEmailExists,
+	requireValidPasswordForUser,
+} = require("./validators");
 
 //create a middle router to connect with app/router in index.js
 const router = express.Router();
@@ -37,17 +45,15 @@ router.get("/signup", (req, res) => {
 
 // router.post("/", bodyParser.urlencoded({ extended:true}), (req, res) => {    (===========> deprecited)
 //(new way of doing the same thing)
-router.post("/signup", async (req, res) => {
+router.post("/signup", [requireEmail, requirePassword, requirePasswordConfirmation], async (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		return res.send(signupTemplate({ req, errors }));
+	}
+
 	const { email, password, passwordConfirmation } = req.body;
-	//check if user email excists
-	const existingUser = await usersRepo.getOneBy({ email });
-	if (existingUser) {
-		return res.send("Email in use");
-	}
-	//check if passwords match
-	if (password !== passwordConfirmation) {
-		return res.send("Passwords must match");
-	}
+
 	//Create a user in user repo to reprisent this person
 	const user = await usersRepo.create({ email, password });
 
@@ -63,23 +69,21 @@ router.get("/signout", (req, res) => {
 });
 
 router.get("/signin", (req, res) => {
-	res.send(signinTemplate());
+	res.send(signinTemplate({}));
 });
 
-router.post("/signin", async (req, res) => {
-	const { email, password } = req.body;
+router.post("/signin", [reuireEmailExists, requireValidPasswordForUser], async (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.send(signinTemplate({ errors }));
+	}
+
+	const { email } = req.body;
 	//check if user is registered
 	const user = await usersRepo.getOneBy({ email });
 
-	if (!user) {
-		return res.send("Email not found");
-	}
-	const validPassword = await usersRepo.comparePasswords(user.password, password);
-	if (!validPassword) {
-		return res.send("Invalid password");
-	}
-
 	req.session.userId = user.id;
+
 	return res.send("YOU are signed in!");
 });
 
