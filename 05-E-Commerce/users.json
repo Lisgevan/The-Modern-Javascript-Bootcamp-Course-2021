@@ -13,5 +13,10 @@
 		"email": "user8@django201.dev",
 		"password": "076ed4bac2e1c139eb82f45e59a493731020bf39f2be3923bba10d2a8d0fea749c358ac4693487e527f70f9e5939ef1c578c6cd6d5d117dc9b22978578e354f0.a62c7dc9e16b4281",
 		"id": "724d4f98"
+	},
+	{
+		"email": "test@test.com",
+		"password": "a00aa0c8523216779a9e3546e50c346c82de91eb9590a1cf4c86b3c12dd21a5c3ff7651f15f73e5b30636f9219e832a60152cc5a77f8eca5318dbc97c02b3f5d.279bc11986aad9f8",
+		"id": "f0f685f0"
 	}
 ]

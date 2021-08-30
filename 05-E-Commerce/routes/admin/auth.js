@@ -58,7 +58,7 @@ router.post(
 		//Store the id of that user inside the users cookie (using 3rd party library "npm install cookie-session")
 		req.session.userId = user.id;
 
-		res.send("Account created!!!");
+		res.redirect("/admin/products");
 	}
 );
 
@@ -82,7 +82,7 @@ router.post(
 
 		req.session.userId = user.id;
 
-		return res.send("YOU are signed in!");
+		res.redirect("/admin/products");
 	}
 );
 
