@@ -1,6 +1,6 @@
 const express = require("express");
-const { check, validationResult } = require("express-validator");
 
+const { handleErrors } = require("./middlewares");
 const usersRepo = require("../../repositories/users");
 const signupTemplate = require("../../views/admin/auth/signup");
 const signinTemplate = require("../../views/admin/auth/signin");
@@ -45,23 +45,22 @@ router.get("/signup", (req, res) => {
 
 // router.post("/", bodyParser.urlencoded({ extended:true}), (req, res) => {    (===========> deprecited)
 //(new way of doing the same thing)
-router.post("/signup", [requireEmail, requirePassword, requirePasswordConfirmation], async (req, res) => {
-	const errors = validationResult(req);
+router.post(
+	"/signup",
+	[requireEmail, requirePassword, requirePasswordConfirmation],
+	handleErrors(signupTemplate),
+	async (req, res) => {
+		const { email, password } = req.body;
 
-	if (!errors.isEmpty()) {
-		return res.send(signupTemplate({ req, errors }));
+		//Create a user in user repo to reprisent this person
+		const user = await usersRepo.create({ email, password });
+
+		//Store the id of that user inside the users cookie (using 3rd party library "npm install cookie-session")
+		req.session.userId = user.id;
+
+		res.send("Account created!!!");
 	}
-
-	const { email, password, passwordConfirmation } = req.body;
-
-	//Create a user in user repo to reprisent this person
-	const user = await usersRepo.create({ email, password });
-
-	//Store the id of that user inside the users cookie (using 3rd party library "npm install cookie-session")
-	req.session.userId = user.id;
-
-	res.send("Account created!!!");
-});
+);
 
 router.get("/signout", (req, res) => {
 	req.session = null;
@@ -72,19 +71,19 @@ router.get("/signin", (req, res) => {
 	res.send(signinTemplate({}));
 });
 
-router.post("/signin", [reuireEmailExists, requireValidPasswordForUser], async (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.send(signinTemplate({ errors }));
+router.post(
+	"/signin",
+	[reuireEmailExists, requireValidPasswordForUser],
+	handleErrors(signinTemplate),
+	async (req, res) => {
+		const { email } = req.body;
+		//check if user is registered
+		const user = await usersRepo.getOneBy({ email });
+
+		req.session.userId = user.id;
+
+		return res.send("YOU are signed in!");
 	}
-
-	const { email } = req.body;
-	//check if user is registered
-	const user = await usersRepo.getOneBy({ email });
-
-	req.session.userId = user.id;
-
-	return res.send("YOU are signed in!");
-});
+);
 
 module.exports = router;
