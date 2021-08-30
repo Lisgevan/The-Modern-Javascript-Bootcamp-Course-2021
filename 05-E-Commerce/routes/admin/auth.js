@@ -10,6 +10,7 @@ const {
 	requirePasswordConfirmation,
 	reuireEmailExists,
 	requireValidPasswordForUser,
+	requireEmailExists,
 } = require("./validators");
 
 //create a middle router to connect with app/router in index.js
@@ -73,11 +74,11 @@ router.get("/signin", (req, res) => {
 
 router.post(
 	"/signin",
-	[reuireEmailExists, requireValidPasswordForUser],
+	[requireEmailExists, requireValidPasswordForUser],
 	handleErrors(signinTemplate),
 	async (req, res) => {
 		const { email } = req.body;
-		//check if user is registered
+
 		const user = await usersRepo.getOneBy({ email });
 
 		req.session.userId = user.id;
