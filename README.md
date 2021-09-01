@@ -21,3 +21,7 @@ A repository with the projects from Part 02 of "The Modern Javascript Bootcamp C
 5. Project five: **"E-Commerce site"**.  
    A JavaScript project to replicate an E-Commerce site using NodeJS and Express server.  
    Find it under the "05-E-Commerce" folder.
+
+6. Project six: **"The basics of testing"**.  
+   A JavaScript code along to learn the basics of writing testing functions for our apps, plus a build of Testing Framework from scratch.  
+   Find it under the "06-Testing" folder.
